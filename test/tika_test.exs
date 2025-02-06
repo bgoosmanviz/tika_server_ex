@@ -1,18 +1,20 @@
 defmodule TikaServerExTest do
   use ExUnit.Case
 
-  @tika_server TikaServerEx.new("http://localhost:9998")
+  setup do
+    Application.put_env(:tika_server_ex, :url, "http://localhost:9998")
+  end
 
   test "extracts text from a .docx file" do
     bytes = File.read!("test/fixtures/story.docx")
-    {:ok, response} = TikaServerEx.new("http://localhost:9998") |> TikaServerEx.Tika.get_text(bytes)
+    {:ok, response} = TikaServerEx.new() |> TikaServerEx.Tika.get_text(bytes)
     assert response.status == 200
     assert response.body =~ "\nOnce upon a time"
   end
 
   test "extracts json from a .docx file" do
     bytes = File.read!("test/fixtures/story.docx")
-    {:ok, response} = TikaServerEx.Tika.get_json(@tika_server, bytes)
+    {:ok, response} = TikaServerEx.new() |> TikaServerEx.Tika.get_json(bytes)
     assert response.status == 200
 
     assert response.body == %{
@@ -36,7 +38,7 @@ defmodule TikaServerExTest do
 
   test "extract text from an html file" do
     bytes = File.read!("test/fixtures/Tapioca DAO stops 1,000 ETH worth $2.7 million from being stolen following exploit that drains majority of its funds.html")
-    {:ok, response} = TikaServerEx.Tika.get_text(@tika_server, bytes)
+    {:ok, response} = TikaServerEx.new() |> TikaServerEx.Tika.get_text(bytes)
     assert response.status == 200
     assert response.body =~ "\n   \n  \n    www.theblock.co\n    /post/322061/tapioca-dao-stops-1000-eth-worth-2-7-million-from-being-stolen-following-exploit-that-drains-majority-of-its-funds\n  \n  Tapioca DAO stops 1,000 ETH worth $2.7 million"
   end

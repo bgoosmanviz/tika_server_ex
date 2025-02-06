@@ -12,7 +12,7 @@ by adding `tika_server_ex` to your list of dependencies in `mix.exs`:
 ```elixir
 def deps do
   [
-    {:tika_server_ex, "~> 0.1.0"}
+    {:tika_server_ex, "~> 0.2.0"}
   ]
 end
 ```
